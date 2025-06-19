@@ -1,23 +1,24 @@
 {
-  "name": "smartbooking",
+  "name": "healthcare-system",
   "version": "1.0.0",
-  "description": "��#\u0000 \u0000s\u0000m\u0000a\u0000r\u0000t\u0000B\u0000o\u0000o\u0000k\u0000i\u0000n\u0000g\u0000\r\u0000 \u0000",
-  "main": "index.js",
-  "directories": {
-    "doc": "docs"
-  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "test:db": "node test-connection.js",
+    "migrate": "npx sequelize-cli db:migrate",
+    "migrate:undo": "npx sequelize-cli db:migrate:undo",
+    "seed": "npx sequelize-cli db:seed:all"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Tech-Inventers/smartBooking.git"
+  "dependencies": {
+    "sequelize": "^6.35.0",
+    "pg": "^8.11.0",
+    "pg-hstore": "^2.3.4",
+    "express": "^4.18.2",
+    "dotenv": "^16.3.1",
+    "cors": "^2.8.5"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Tech-Inventers/smartBooking/issues"
-  },
-  "homepage": "https://github.com/Tech-Inventers/smartBooking#readme"
+  "devDependencies": {
+    "sequelize-cli": "^6.6.2",
+    "nodemon": "^3.0.2"
+  }
 }
