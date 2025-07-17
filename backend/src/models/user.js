@@ -1,30 +1,53 @@
-// Export a function that defines the User model
+const bcrypt = require("bcryptjs");
+ 
 module.exports = (sequelize, DataTypes) => {
-  // Define the User schema using Sequelize's define method
-  const User = sequelize.define('User', {
-    // Required name field (string)
-    name: {
-      type: DataTypes.STRING,
-      allowNull: false,
+  const User = sequelize.define("User", {
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
     },
-    // Unique email field with email format validation
     email: {
       type: DataTypes.STRING,
       unique: true,
+      allowNull: false,
       validate: { isEmail: true },
     },
-    // Required password field (string)
     password: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    // Optional role field with default value
     role: {
-      type: DataTypes.STRING,
-      defaultValue: 'user',
+      type: DataTypes.ENUM("user", "provider", "admin"),
+      defaultValue: "user",
     },
+    isApproved: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
+    proof: {
+      type: DataTypes.STRING, // Future usage (For now optional)
+      allowNull: true,
+    }
+  }, {
+    hooks: {
+      beforeCreate: async (user) => {
+        if (user.password) {
+          user.password = await bcrypt.hash(user.password, 10);
+        }
+        // Auto-approve admins
+        if (user.role === 'admin') {
+          user.isApproved = true;
+        }
+      },
+      beforeUpdate: async (user) => {
+        if (user.changed("password")) {
+          user.password = await bcrypt.hash(user.password, 10);
+        }
+      },
+    },
+    tableName: "users",
   });
  
-  // Return the configured model to be registered in Sequelize
   return User;
 };
