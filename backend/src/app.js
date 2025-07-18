@@ -17,4 +17,10 @@ app.use("/api/admin", adminRoutes);
  
 app.get("/", (req, res) => res.send("Smart Booking API Running"));
  
+const availabilityRoutes = require("../api/routes/availability.routes");
+app.use("/api/availability", availabilityRoutes);
+
+const bookingRoutes = require("../api/routes/booking.routes");
+app.use("/api/bookings", bookingRoutes);
+
 module.exports = app;
