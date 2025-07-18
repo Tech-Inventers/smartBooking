@@ -6,57 +6,114 @@ const db = require("../src/models");
 chai.use(chaiHttp);
 const { expect } = chai;
  
-describe("Admin Registration", function () {
+describe("Provider Registration", function () {
   this.timeout(30000);
+  let adminToken;
  
-  it("should auto-approve pre-approved admin email", (done) => {
-    chai
-      .request(app)
+  before(async function() {
+    this.timeout(30000);
+    await db.sequelize.sync({ force: true });
+   
+    // Register an admin first
+    await chai.request(app)
       .post("/api/auth/register")
       .send({
         email: "admin1@example.com",
-        password: "admin123",
-      })
-      .end((err, res) => {
-        if (err) return done(err);
-        expect(res).to.have.status(201);
-        expect(res.body.user.role).to.equal("admin");
-        expect(res.body.user.isApproved).to.be.true;
-        done();
+        password: "admin123"
       });
+   
+    // Login admin to get token
+    const res = await chai.request(app)
+      .post("/api/auth/login")
+      .send({
+        email: "admin1@example.com",
+        password: "admin123"
+      });
+   
+    adminToken = res.body.token;
   });
+ /*
+  after(async function() {
+    await db.sequelize.close();
+  });
+  */
  
-  it("should force user role for non-pre-approved emails (ignoring requested admin role)", (done) => {
+  it("should register pre-approved provider but not auto-approve", (done) => {
     chai
       .request(app)
       .post("/api/auth/register")
       .send({
-        email: "regularuser@example.com",
-        password: "password123",
-        role: "admin"
+        email: "provider1@example.com",
+        password: "provider123"
       })
       .end((err, res) => {
         if (err) return done(err);
         expect(res).to.have.status(201);
-        expect(res.body.user.role).to.equal("user");
+        expect(res.body.user.role).to.equal("provider");
         expect(res.body.user.isApproved).to.be.false;
         done();
       });
   });
  
-  it("should allow second admin registration", (done) => {
+  it("should allow admin to approve provider", (done) => {
+    // First register a provider
     chai
       .request(app)
       .post("/api/auth/register")
       .send({
-        email: "admin2@example.com",
-        password: "admin123",
+        email: "provider2@example.com",
+        password: "provider123"
       })
-      .end((err, res) => {
+      .end((err, registerRes) => {
         if (err) return done(err);
-        expect(res).to.have.status(201);
-        expect(res.body.user.role).to.equal("admin");
-        done();
+       
+        // Then approve the provider
+        chai
+          .request(app)
+          .put(`/api/admin/providers/${registerRes.body.user.id}/approve`)
+          .set("Authorization", `Bearer ${adminToken}`)
+          .end((err, approveRes) => {
+            if (err) return done(err);
+            expect(approveRes).to.have.status(200);
+            expect(approveRes.body.user.isApproved).to.be.true;
+            done();
+          });
+      });
+  });
+ 
+  it("should not allow non-admin to approve providers", (done) => {
+    // First register a regular user
+    chai
+      .request(app)
+      .post("/api/auth/register")
+      .send({
+        email: "regular@example.com",
+        password: "regular123"
+      })
+      .end((err, registerRes) => {
+        if (err) return done(err);
+       
+        // Login as regular user
+        chai
+          .request(app)
+          .post("/api/auth/login")
+          .send({
+            email: "regular@example.com",
+            password: "regular123"
+          })
+          .end((err, loginRes) => {
+            if (err) return done(err);
+           
+            // Try to approve provider (should fail)
+            chai
+              .request(app)
+              .put(`/api/admin/providers/${registerRes.body.user.id}/approve`)
+              .set("Authorization", `Bearer ${loginRes.body.token}`)
+              .end((err, approveRes) => {
+                expect(approveRes).to.have.status(403);
+                done();
+              });
+          });
       });
   });
 });
