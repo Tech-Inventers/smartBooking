@@ -13,12 +13,23 @@ const sequelize = new Sequelize(
   }
 );
  
-// Import models and initialize them with sequelize
-const User = require("./user")(sequelize, DataTypes);
+// Initialize models
+const models = {
+  User: require("./user")(sequelize, DataTypes),
+  Availability: require("./availability")(sequelize, DataTypes),
+  Booking: require("./booking")(sequelize, DataTypes),
+};
  
-// Export sequelize and models
+// Call associate methods for all models that have it
+Object.values(models).forEach((model) => {
+  if (model.associate) {
+    model.associate(models);
+  }
+});
+ 
+ 
 module.exports = {
   sequelize,
   Sequelize,
-  User,
+  ...models,
 };
