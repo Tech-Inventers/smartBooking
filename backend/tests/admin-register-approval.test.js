@@ -9,15 +9,6 @@ const { expect } = chai;
 describe("Admin Registration", function () {
   this.timeout(30000);
  
-  before(async function() {
-    this.timeout(30000);
-    await db.sequelize.sync({ force: true });
-  });
- 
-  after(async function() {
-    await db.sequelize.close();
-  });
- 
   it("should auto-approve pre-approved admin email", (done) => {
     chai
       .request(app)
