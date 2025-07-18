@@ -49,5 +49,12 @@ module.exports = (sequelize, DataTypes) => {
     tableName: "users",
   });
  
+  // Define associations here
+  User.associate = (models) => {
+    User.hasMany(models.Booking, { foreignKey: "patientId", as: "patientBookings" });
+    User.hasMany(models.Booking, { foreignKey: "staffId", as: "staffBookings" });
+    User.hasMany(models.Availability, { foreignKey: "staffId", as: "availabilities" });
+  };
+ 
   return User;
 };
