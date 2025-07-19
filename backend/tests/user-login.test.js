@@ -52,16 +52,6 @@ describe("POST /api/auth/login", function () {
     }
   });
  
-  after(async function() {
-    try {
-      // Clean up after tests
-      await db.sequelize.close();
-      console.log("Database connection closed.");
-    } catch (error) {
-      console.error("Error closing database:", error);
-    }
-  });
- 
   it("should login an existing user and return a token", (done) => {
     chai
       .request(app)

@@ -29,15 +29,6 @@ describe("POST /api/auth/register", function () {
     }
   });
  
-  after(async function() {
-    try {
-      // Clean up after tests
-      await db.sequelize.close();
-      console.log("Database connection closed.");
-    } catch (error) {
-      console.error("Error closing database:", error);
-    }
-  });
  
   it("should register a new user and return a token", (done) => {
     chai
