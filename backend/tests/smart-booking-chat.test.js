@@ -11,8 +11,9 @@ describe("NLP Chat Assistant Booking", function () {
   let adminToken, providerToken, userToken, providerId;
 
   before(async function () {
-    await db.sequelize.sync({ force: true });
+    await db.sequelize.sync({ force: true }); // Reset database
 
+    // Register admin, provider, and user accounts
     await chai.request(app).post("/api/auth/register").send({
       email: "admin1@example.com", password: "admin123"
     });
@@ -23,6 +24,7 @@ describe("NLP Chat Assistant Booking", function () {
       email: "user1@example.com", password: "user123"
     });
 
+    // Login and store tokens
     adminToken = (await chai.request(app).post("/api/auth/login").send({
       email: "admin1@example.com", password: "admin123"
     })).body.token;
@@ -35,14 +37,17 @@ describe("NLP Chat Assistant Booking", function () {
       email: "user1@example.com", password: "user123"
     })).body.token;
 
+    // Get provider user ID
     providerId = (await chai.request(app).post("/api/auth/login").send({
       email: "provider1@example.com", password: "provider123"
     })).body.user.id;
 
+    // Approve provider via admin
     await chai.request(app)
       .put(`/api/admin/providers/${providerId}/approve`)
       .set("Authorization", `Bearer ${adminToken}`);
 
+    // Add availability slot for provider
     await chai.request(app)
       .post("/api/availability")
       .set("Authorization", `Bearer ${providerToken}`)
@@ -53,6 +58,7 @@ describe("NLP Chat Assistant Booking", function () {
       });
   });
 
+   // Test NLP chat-based booking creation
   it("should process message and create booking", (done) => {
     chai.request(app)
       .post("/api/chat/assistant")

@@ -1,4 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
+  // Define Booking model
   const Booking = sequelize.define("Booking", {
     id: {
       type: DataTypes.INTEGER,
@@ -9,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: 'users', // ✅ must match tableName in user.js
+        model: 'users', 
         key: 'id'
       }
     },
@@ -50,7 +51,8 @@ module.exports = (sequelize, DataTypes) => {
       }
     ]
   });
- 
+
+  // Define relationships to User model
   Booking.associate = (models) => {
     Booking.belongsTo(models.User, {
       foreignKey: "patientId",
@@ -61,6 +63,6 @@ module.exports = (sequelize, DataTypes) => {
       as: "staff"
     });
   };
- 
+
   return Booking;
 };

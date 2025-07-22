@@ -2,16 +2,16 @@ const chai = require("chai");
 const chaiHttp = require("chai-http");
 const app = require("../src/app");
 const db = require("../src/models");
- 
+
 chai.use(chaiHttp);
 const { expect } = chai;
- 
+
 describe("Availability Management", function () {
   this.timeout(30000);
   let adminToken, providerToken, userToken;
- 
+
   before(async function() {
-   
+    
     // Register users
     await chai.request(app).post("/api/auth/register").send({
       email: "admin1@example.com",
@@ -25,7 +25,7 @@ describe("Availability Management", function () {
       email: "user1@example.com",
       password: "user123"
     });
- 
+
     // Login and get tokens
     adminToken = (await chai.request(app).post("/api/auth/login").send({
       email: "admin1@example.com",
@@ -39,7 +39,7 @@ describe("Availability Management", function () {
       email: "user1@example.com",
       password: "user123"
     })).body.token;
- 
+
     // Approve provider
     const provider = (await chai.request(app).post("/api/auth/login").send({
       email: "provider1@example.com",
@@ -49,7 +49,7 @@ describe("Availability Management", function () {
       .put(`/api/admin/providers/${provider.id}/approve`)
       .set("Authorization", `Bearer ${adminToken}`);
   });
- 
+
   it("should allow provider to add availability", (done) => {
     chai.request(app)
       .post("/api/availability")
@@ -66,7 +66,7 @@ describe("Availability Management", function () {
         done();
       });
   });
- 
+
   it("should prevent overlapping availability", (done) => {
     chai.request(app)
       .post("/api/availability")
@@ -83,7 +83,7 @@ describe("Availability Management", function () {
         done();
       });
   });
- 
+
   it("should allow users to view availability", (done) => {
     chai.request(app)
       .get("/api/availability")

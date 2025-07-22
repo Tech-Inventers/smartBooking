@@ -8,6 +8,7 @@ const adminController = require("../controllers/admin.controller");
 router.use(authenticate);
 router.use(authorizeRole("admin"));
  
+// Approve a provider account
 router.put("/providers/:userId/approve", adminController.approveProvider);
  
 module.exports = router;

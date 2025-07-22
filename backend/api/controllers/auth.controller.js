@@ -1,15 +1,16 @@
-const db = require("../../src/models");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
+const db = require("../../src/models"); // Import database models
+const bcrypt = require("bcryptjs"); // For password hashing
+const jwt = require("jsonwebtoken"); // For token generation
 
 const validRoles = ["user", "provider", "admin"];
-const preApprovedEmails = {
+const preApprovedEmails = { // Pre-set role mappings for approved emails [adminns and providers]
   "admin1@example.com": "admin",
   "admin2@example.com": "admin",
   "provider1@example.com": "provider",
   "provider2@example.com": "provider"
 };
 
+// Register new user
 const register = async (req, res) => {
   try {
     const { email, password, role: requestedRole } = req.body;
@@ -56,6 +57,7 @@ const register = async (req, res) => {
       { expiresIn: "1h" }
     );
 
+    // Send registration success response
     res.status(201).json({
       token,
       user: {
@@ -72,6 +74,7 @@ const register = async (req, res) => {
   }
 };
 
+// Log in existing user
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -106,6 +109,7 @@ const login = async (req, res) => {
       { expiresIn: "1h" }
     );
 
+    // Send login success response
     res.status(200).json({
       token,
       user: {

@@ -45,7 +45,7 @@ const handleSmartBooking = async (req, res) => {
       return res.status(500).json({ message: "Empty reply from assistant." });
     }
 
-    console.log("🧠 AI Response:", aiReply);
+    console.log("AI Response:", aiReply);
 
     // Extract JSON block from assistant response
     const jsonMatch = aiReply.match(/```json([\s\S]*?)```/) || aiReply.match(/{[\s\S]*}/);

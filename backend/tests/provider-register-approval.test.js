@@ -32,10 +32,11 @@ describe("Provider Registration", function () {
    
     adminToken = res.body.token;
   });
- 
+ /*
   after(async function() {
     await db.sequelize.close();
   });
+  */
  
   it("should register pre-approved provider but not auto-approve", (done) => {
     chai

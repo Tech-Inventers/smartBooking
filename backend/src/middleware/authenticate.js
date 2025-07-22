@@ -6,7 +6,7 @@ module.exports = (req, res, next) => {
   if (!token) return res.status(401).json({ message: "No token provided" });
 
   try {
-    const decoded = verifyToken(token);
+    const decoded = verifyToken(token); // Verify token and decode payload
     req.user = decoded;
     next();
   } catch (err) {

@@ -6,7 +6,7 @@ before(async () => {
     await db.sequelize.sync({ force: true });
     console.log('Test DB authenticated and synced');
   } catch (error) {
-    console.error('est DB setup failed:', error);
+    console.error('Test DB setup failed:', error);
     process.exit(1);
   }
 });

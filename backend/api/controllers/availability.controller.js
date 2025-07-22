@@ -1,6 +1,8 @@
 const db = require("../../src/models");
 const { Op } = require("sequelize");
 
+
+// Add availability slot for provider
 const addAvailability = async (req, res) => {
   try {
     const { date, startTime, endTime, slotDuration } = req.body;
@@ -28,6 +30,7 @@ const addAvailability = async (req, res) => {
       return res.status(400).json({ message: "This time slot overlaps with existing availability" });
     }
 
+    // Create availability with default slot duration if none provided
     const availability = await db.Availability.create({
       staffId: req.user.id,
       date,
@@ -43,6 +46,7 @@ const addAvailability = async (req, res) => {
   }
 };
 
+// Get availability slots for staff
 const getAvailability = async (req, res) => {
   try {
     const { staffId, date } = req.query;
@@ -51,6 +55,7 @@ const getAvailability = async (req, res) => {
     if (staffId) where.staffId = staffId;
     if (date) where.date = date;
 
+    // Fetch availability with provider details
     const availability = await db.Availability.findAll({
       where,
       include: [{

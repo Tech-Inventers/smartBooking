@@ -1,4 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
+  // Define Availability model
   const Availability = sequelize.define("Availability", {
     id: {
       type: DataTypes.INTEGER,
@@ -42,13 +43,13 @@ module.exports = (sequelize, DataTypes) => {
       }
     ]
   });
- 
+
   Availability.associate = (models) => {
     Availability.belongsTo(models.User, {
       foreignKey: "staffId",
       as: "staff"
     });
   };
- 
+
   return Availability;
 };

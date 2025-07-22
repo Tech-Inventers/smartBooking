@@ -1,6 +1,7 @@
 const bcrypt = require("bcryptjs");
- 
+
 module.exports = (sequelize, DataTypes) => {
+  // Define User model
   const User = sequelize.define("User", {
     id: {
       type: DataTypes.INTEGER,
@@ -48,13 +49,13 @@ module.exports = (sequelize, DataTypes) => {
     },
     tableName: "users",
   });
- 
-  // Define associations here
+
+  // Set up associations
   User.associate = (models) => {
     User.hasMany(models.Booking, { foreignKey: "patientId", as: "patientBookings" });
     User.hasMany(models.Booking, { foreignKey: "staffId", as: "staffBookings" });
     User.hasMany(models.Availability, { foreignKey: "staffId", as: "availabilities" });
   };
- 
+
   return User;
 };
