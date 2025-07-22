@@ -1,0 +1,51 @@
+# .github/workflows/backend-ci.yml
+name: Backend Tests CI
+
+on:
+  push:
+    branches: [main, feature/**, refactor/**]
+  pull_request:
+    branches: [main]
+
+jobs:
+  run-backend-tests:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v3
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '22.11.0'
+
+      - name: 📦 Install dependencies
+        run: npm install
+
+      - name: 🛠️ Create .env file
+        run: |
+          cat <<EOF > backend/.env
+          DB_HOST=aws-0-sa-east-1.pooler.supabase.com
+          DB_PORT=6543
+          DB_NAME=postgres
+          DB_USER=postgres.qcepkauzpmllglhpwgeq
+          DB_PASSWORD=Developers@BSG2025
+
+          JWT_SECRET=a9f4e35b62ff4b3b9aef1a73092fcab8fbe09c3e3e8db8a9d4a7a4c263b95e72
+          EOF
+
+      - name: 🧪 Run user-register.test.js
+        run: node --test backend/tests/user-register.test.js --test-reporter spec || npx mocha backend/tests/user-register.test.js --exit
+
+      - name: 🧪 Run user-login.test.js
+        run: node --test backend/tests/user-login.test.js --test-reporter spec || npx mocha backend/tests/user-login.test.js --exit
+
+      - name: 🧪 Run admin-register-approval.test.js
+        run: node --test backend/tests/admin-register-approval.test.js --test-reporter spec || npx mocha backend/tests/admin-register-approval.test.js --exit
+
+      - name: 🧪 Run provider-register-approval.test.js
+        run: node --test backend/tests/provider-register-approval.test.js --test-reporter spec || npx mocha backend/tests/provider-register-approval.test.js --exit
