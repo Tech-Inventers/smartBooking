@@ -67,3 +67,43 @@ Before you begin, ensure you have the following installed/configured:
 - **Reject missing email**: Should reject registration without email. Expected: Status 400, "Email is required"
 - **Reject missing password**: Should reject registration without password. Expected: Status 400, "Password is required"
 - **Reject missing email and password**: Should reject registration with both fields missing. Expected: Status 400, "Email and password are required"
+
+## 🧪 Continuous Integration (CI)
+
+To ensure code quality and stability, this project uses **GitHub Actions** for continuous integration (CI). Each time code is pushed or a pull request is opened against `main`, a dedicated workflow runs automated tests to validate critical backend features.
+
+### ✅ Workflow Location
+`.github/workflows/backend-ci.yml`
+
+### 🔄 Trigger Events
+
+This CI pipeline automatically runs on:
+- Pushes to `main`, `feature/**`, and `refactor/**` branches
+- Pull requests targeting the `main` branch
+
+### 🛠️ What the Workflow Does
+
+1. **📥 Checks out the repository**
+2. **🟢 Sets up Node.js (v22.11.0)**
+3. **📦 Installs project dependencies using `npm install`**
+4. **🔐 Automatically creates a `.env` file** with all required environment variables (DB and JWT config)
+5. **🧪 Runs critical test suites individually** using `node --test` and falls back to `mocha` if needed
+
+### ✅ Tests Included in CI
+
+- `user-register.test.js`: Validates user sign-up scenarios  
+- `user-login.test.js`: Authenticates existing users and handles login errors  
+- `admin-register-approval.test.js`: Covers admin account approval logic  
+- `provider-register-approval.test.js`: Validates provider registration and admin approval flow
+
+### 📌 Example Test Output
+
+Each test step outputs detailed pass/fail information in the GitHub Actions logs so contributors can track regressions and maintain high test coverage.
+
+### 🧠 Why CI/CD?
+
+By integrating CI, we:
+- Catch bugs early before merging
+- Maintain test-driven development (TDD) culture
+- Protect production-ready branches
+- Automate quality assurance for smoother collaboration
