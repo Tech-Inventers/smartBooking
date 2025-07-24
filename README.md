@@ -36,8 +36,8 @@ Before you begin, ensure you have the following installed/configured:
 ### 🛠️ What It Does:
 1. **✅ Understands free-form user messages like:**
 - 🔹Can I book an appointment on Friday at 10?
-- 🔹Please cancel my session next week
-- 🔹Show me my upcoming appointments
+- 🔹Please cancel my session next week?
+- 🔹Show me my upcoming appointments?
 2. **✅ Extracts relevant details such as:**
   - 🔹Dates and times
   - 🔹Provider email
@@ -91,7 +91,7 @@ Before you begin, ensure you have the following installed/configured:
   - Admins are auto-approved, while providers must be manually approved by an admin after registration.
 
 
-2. **Login & JWT Authentication**
+2. **✅ Login & JWT Authentication**
    - Users log in via /api/auth/login.
    - Credentials are validated securely by comparing the provided password with the hashed one in the DB.
    - A JSON Web Token (JWT) is issued upon successful login, embedding the user's id and role.
@@ -115,7 +115,7 @@ Before you begin, ensure you have the following installed/configured:
    - Password comparison is done using secure bcrypt methods (comparePassword()).
    - Passwords are never stored or returned in plaintext.
      
-# Test Suite Documentation
+# 🧪 Test Suite Documentation
 
 ### ✅ Admin Registration Tests (`admin-register-approval.test.js`)
 - **Auto-approve pre-approved admin email**: Should automatically approve admin registration for pre-approved emails. Expected: Status 201, role="admin", isApproved=true
